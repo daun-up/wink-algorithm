@@ -1,3 +1,5 @@
+# 1. 뒤에 해야할 작업의 마감시간이 바로 전 작업 시간과 겹쳤을 경우
+# 2. 제시간에 작업을 수행하지 못할 경우 (모든 작업을 끝낸 시간이 0보다 작을 경우)
 import sys
 
 input = sys.stdin.readline
@@ -6,19 +8,28 @@ N = int(input())
 work = []
 
 for _ in range(N):
-    t, s = map(int, input().split())
+    t, s = map(int, input().split()) # 튜플
     work.append((t, s))
 
-work.sort(key=lambda x: (x[1], x[0]), reverse=True)
+work.sort(key=lambda x: (x[1], x[0]), reverse=True) # 마감 시간, 소요 시간 기준으로 정렬
+# x[1]: 마감 시간(s)을 기준으로 내림차순 정렬 즉, 마감 시간이 늦은 작업부터 처리
+# x[0]: 만약 마감 시간이 동일하다면 소요 시간이 더 긴 작업을 우선 처리하도록 소요 시간(t)도 내림차순으로 정렬
 
-time = work[0][1]
+time = work[0][1] # 현재 가능한 가장 늦은 시간
 for i in range(1, N):
-    if time < work[i][1]:
-        time -= work[i][0]
-    else:
-        time = work[i][1] - work[i][0]
+    if time < work[i][1]: # 현재 가능한 시간(time)이 작업의 마감 시간보다 작을 때 
+        time -= work[i][0] # 현재 시간에 작업을 처리 작업을 처리한 후, time 에서 그 작업의 소요 시간을 뺌
+    else: # 현재 가능한 시간(time)이 작업의 마감 시간보다 클 때
+        time = work[i][1] - work[i][0] # 마감 시간에 맞춰 작업을 처리 현재 시간을 해당 작업의 마감 시간에서 소요 시간을 뺀 값으로 설정
 
 if time < 0:
     print(-1)
 else:
     print(time)
+    
+
+# 그리디 알고리즘은 현재 상황에서 가장 최적인 선택을 반복함으로써 전체 문제의 최적해를 찾는 방법
+
+# 이 문제에서 그리디 알고리즘은 마감 시간이 늦은 작업부터 처리하면서, 각 작업을 가능한 한 늦게 시작할 수 있도록 선택하는 전략을 사용
+
+# 각 작업을 처리할 때, 가능한 가장 늦은 시간에 일을 시작하도록 조정하는 것이 그리디한 선택입 이렇게 함으로써 남은 작업들도 충분히 처리할 수 있는 시간이 확보
